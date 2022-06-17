@@ -11,9 +11,15 @@ public class MonoRoutine{
     }
 
     public void Start(IEnumerator routine){
-        if (routine != null)
-            context.StopCoroutine(routine);
+        Stop();
         coroutine = context.StartCoroutine(Handle(routine));
+    }
+
+    public void Stop(){
+        if (coroutine != null){
+            context.StopCoroutine(coroutine);
+            coroutine = null;
+        }
     }
 
     public bool isRunning(){
