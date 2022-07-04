@@ -20,9 +20,9 @@ public class FPSCounter : MonoBehaviour {
 
     void Start (){
         GUI.depth = 2;
-        GUI.color = fontColor;
         style = new GUIStyle();
         style.fontSize = fontSize;
+        style.normal.textColor = fontColor;
     }
 
     private void Update() {
