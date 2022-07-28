@@ -1,4 +1,4 @@
-Shader "game/Template"
+Shader "Game/Template"
 {
     Properties
     {
