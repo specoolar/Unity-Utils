@@ -176,6 +176,13 @@ Shader "URP Template/Lit"
 #endif
                 float4 positionCS               : SV_POSITION;
             };
+            
+            // TEXTURE2D(_BaseMap);
+            // SAMPLER(sampler_BaseMap);
+
+            // CBUFFER_START(UnityPerMaterial)
+                // half4 _BaseColor;
+            // CBUFFER_END
 
             Varyings LitPassVertex(Attributes input)
             {
