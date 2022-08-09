@@ -1,20 +1,11 @@
-﻿using System;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public abstract class RoutinerGroup{
-    public List<RoutinerBase> routiners = new List<RoutinerBase>();
-    public void OnStartRoutine(RoutinerBase rt){
-        foreach (var item in routiners)
-            item.Stop();
-    }
-}
-
 public abstract class RoutinerBase{
     protected MonoBehaviour context;
     protected Coroutine routine;
-    public RoutinerGroup group;
 
     public void Stop(){
         if (routine != null) context.StopCoroutine(routine);
@@ -30,10 +21,9 @@ public class Routiner: RoutinerBase
 {
     Func<IEnumerator> action;
 
-    public Routiner(MonoBehaviour context, Func<IEnumerator> action, RoutinerGroup group = null){
+    public Routiner(MonoBehaviour context, Func<IEnumerator> action){
         this.context = context;
         this.action = action;
-        this.group = group;
     }
 
     public void Start(bool forceRestart = true){
@@ -43,7 +33,6 @@ public class Routiner: RoutinerBase
             else
                 return;
         }
-        group?.OnStartRoutine(this);
         routine = context.StartCoroutine(Handle());
     }
 
@@ -57,10 +46,9 @@ public class Routiner<T> : RoutinerBase
 {
     Func<T, IEnumerator> action;
 
-    public Routiner(MonoBehaviour context, Func<T, IEnumerator> action, RoutinerGroup group = null){
+    public Routiner(MonoBehaviour context, Func<T, IEnumerator> action){
         this.context = context;
         this.action = action;
-        this.group = group;
     }
 
     public void Start(T t, bool forceRestart = true){
@@ -70,7 +58,6 @@ public class Routiner<T> : RoutinerBase
             else
                 return;
         }
-        group?.OnStartRoutine(this);
         routine = context.StartCoroutine(Handle(t));
     }
 
@@ -84,10 +71,9 @@ public class Routiner<T0, T1> : RoutinerBase
 {
     Func<T0, T1, IEnumerator> action;
 
-    public Routiner(MonoBehaviour context, Func<T0, T1, IEnumerator> action, RoutinerGroup group = null){
+    public Routiner(MonoBehaviour context, Func<T0, T1, IEnumerator> action){
         this.context = context;
         this.action = action;
-        this.group = group;
     }
 
     public void Start(T0 t0, T1 t1, bool forceRestart = true){
@@ -97,7 +83,6 @@ public class Routiner<T0, T1> : RoutinerBase
             else
                 return;
         }
-        group?.OnStartRoutine(this);
         routine = context.StartCoroutine(Handle(t0, t1));
     }
 
@@ -111,10 +96,9 @@ public class Routiner<T0, T1, T2> : RoutinerBase
 {
     Func<T0, T1, T2, IEnumerator> action;
 
-    public Routiner(MonoBehaviour context, Func<T0, T1, T2, IEnumerator> action, RoutinerGroup group = null){
+    public Routiner(MonoBehaviour context, Func<T0, T1, T2, IEnumerator> action){
         this.context = context;
         this.action = action;
-        this.group = group;
     }
 
     public void Start(T0 t0, T1 t1, T2 t2, bool forceRestart = true){
@@ -124,7 +108,6 @@ public class Routiner<T0, T1, T2> : RoutinerBase
             else
                 return;
         }
-        group?.OnStartRoutine(this);
         routine = context.StartCoroutine(Handle(t0, t1, t2));
     }
 
@@ -139,10 +122,9 @@ public class Routiner<T0, T1, T2, T3> : RoutinerBase
 {
     Func<T0, T1, T2, T3, IEnumerator> action;
 
-    public Routiner(MonoBehaviour context, Func<T0, T1, T2, T3, IEnumerator> action, RoutinerGroup group = null){
+    public Routiner(MonoBehaviour context, Func<T0, T1, T2, T3, IEnumerator> action){
         this.context = context;
         this.action = action;
-        this.group = group;
     }
 
     public void Start(T0 t0, T1 t1, T2 t2, T3 t3, bool forceRestart = true){
@@ -152,7 +134,6 @@ public class Routiner<T0, T1, T2, T3> : RoutinerBase
             else
                 return;
         }
-        group?.OnStartRoutine(this);
         routine = context.StartCoroutine(Handle(t0, t1, t2, t3));
     }
 
