@@ -13,7 +13,7 @@ public class MonoRoutine{
     public void Start(IEnumerator routine){
         Stop();
         this.routine = routine;
-        context.StartCoroutine(Handle(routine));
+        context.StartCoroutine(Handle());
     }
 
     public void Stop(){
@@ -25,7 +25,7 @@ public class MonoRoutine{
         return routine != null;
     }
 
-    IEnumerator Handle(IEnumerator routine){
+    IEnumerator Handle(){
         yield return routine;
         routine = null;
     }
