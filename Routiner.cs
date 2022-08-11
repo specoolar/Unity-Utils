@@ -6,14 +6,18 @@ using UnityEngine;
 public abstract class RoutinerBase{
     protected MonoBehaviour context;
     protected IEnumerator routine;
+    protected Coroutine waiter;
 
     public void Stop(){
         if (routine != null) context.StopCoroutine(routine);
+        if (waiter != null) context.StopCoroutine(waiter);
         routine = null;
+        waiter = null;
     }
-    protected IEnumerator Handle(){
+    protected IEnumerator Wait(){
         yield return routine;
         routine = null;
+        waiter = null;
     }
     
     public bool isRunning(){
@@ -33,7 +37,7 @@ public class Routiner: RoutinerBase
     public void Start(){
         Stop();
         routine = action();
-        context.StartCoroutine(Handle());
+        waiter = context.StartCoroutine(Wait());
     }
 }
 
@@ -49,7 +53,7 @@ public class Routiner<T> : RoutinerBase
     public void Start(T t){
         Stop();
         routine = action(t);
-        context.StartCoroutine(Handle());
+        waiter = context.StartCoroutine(Wait());
     }
 }
 
@@ -65,7 +69,7 @@ public class Routiner<T0, T1> : RoutinerBase
     public void Start(T0 t0, T1 t1){
         Stop();
         routine = action(t0, t1);
-        context.StartCoroutine(Handle());
+        waiter = context.StartCoroutine(Wait());
     }
 }
 
@@ -81,7 +85,7 @@ public class Routiner<T0, T1, T2> : RoutinerBase
     public void Start(T0 t0, T1 t1, T2 t2){
         Stop();
         routine = action(t0, t1, t2);
-        context.StartCoroutine(Handle());
+        waiter = context.StartCoroutine(Wait());
     }
 }
 
@@ -98,6 +102,6 @@ public class Routiner<T0, T1, T2, T3> : RoutinerBase
     public void Start(T0 t0, T1 t1, T2 t2, T3 t3){
         Stop();
         routine = action(t0, t1, t2, t3);
-        context.StartCoroutine(Handle());
+        waiter = context.StartCoroutine(Wait());
     }
 }
