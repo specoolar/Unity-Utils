@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class MonoRoutine{
     MonoBehaviour context;
-    IEnumerator routine;
+    Coroutine routine;
     Coroutine waiter;
 
     public MonoRoutine(MonoBehaviour context){
@@ -13,12 +13,13 @@ public class MonoRoutine{
 
     public void Start(IEnumerator routine){
         Stop();
-        this.routine = routine;
+        this.routine = context.StartCoroutine(routine);
         waiter = context.StartCoroutine(Wait());
     }
 
     IEnumerator Wait(){
         yield return routine;
+        if (waiter != null) context.StopCoroutine(waiter);
         routine = null;
         waiter = null;
     }
