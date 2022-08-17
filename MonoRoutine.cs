@@ -5,40 +5,34 @@ using UnityEngine;
 public class MonoRoutine{
     MonoBehaviour context;
     IEnumerator routine;
-    Coroutine processor;
-    bool _isRunning = false;
-
-    public bool isRunning{
-        get {
-            return _isRunning;
-        }
+    IEnumerator processor;
+    private bool isRunning = false;
+    public bool IsRunning{
+        get => isRunning;
     }
+    public MonoRoutine(MonoBehaviour context) => this.context = context;
 
-    public MonoRoutine(MonoBehaviour context){
-        this.context = context;
+    public void Start(IEnumerator _routine) {
+        _stop();
+        routine = _routine;
+        processor = _wait();
+        isRunning = true;
+        context.StartCoroutine(_wait());
     }
-
-    public void Start(IEnumerator routine) {
-        Stop();
-        _isRunning = true;
-        this.routine = routine;
-        processor = context.StartCoroutine(Wait());
-        if (!_isRunning) {
-            context.StopCoroutine(processor);
-            processor = null;
-        }
-    }
-
-    IEnumerator Wait() {
-        yield return routine;
-        _isRunning = false;
-    }
-
     public void Stop() {
-        if (processor != null) context.StopCoroutine(processor);
+        _stop();
         processor = null;
-        if (routine != null) context.StopCoroutine(routine);
         routine = null;
-        _isRunning = false;
+        isRunning = false;
+    }
+
+    private IEnumerator _wait() {
+        yield return routine;
+        isRunning = false;
+    }
+
+    private void _stop() {
+        if (processor != null) context.StopCoroutine(processor);
+        if (routine != null) context.StopCoroutine(routine);
     }
 }
