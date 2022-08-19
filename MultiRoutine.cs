@@ -1,10 +1,11 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
 public class MultiRoutine{
     MonoBehaviour context;
-    List<MonoRoutine> routines;
+    LinkedList<MonoRoutine> routines;
     public bool IsRunning {
         get {
             foreach (var routine in routines)
@@ -14,21 +15,34 @@ public class MultiRoutine{
     }
     public MultiRoutine(MonoBehaviour context) {
         this.context = context;
-        routines = new List<MonoRoutine>();
+        routines = new LinkedList<MonoRoutine>();
     }
 
-    public MonoRoutine Start(IEnumerator _routine, bool additive = false) {
-        if(!additive)
-            Stop();
-
+    public MonoRoutine StartNew(IEnumerator _routine, Action onStop = null) {
+        Stop();
         MonoRoutine mr = new MonoRoutine(context);
-        routines.Add(mr);
-        mr.Start(_routine);
+        mr.AddToGroup(this, routines.AddLast(mr));
+        mr.Start(_routine, onStop);
         return mr;
     }
+    public MonoRoutine StartParallel(IEnumerator _routine, Action onStop = null) {
+        MonoRoutine mr = new MonoRoutine(context);
+        mr.AddToGroup(this, routines.AddLast(mr));
+        mr.Start(_routine, onStop);
+        return mr;
+    }
+
+    public void AddRoutine(MonoRoutine routine) {
+        routine.AddToGroup(this, routines.AddLast(routine));
+    }
+    public void RemoveRoutine(MonoRoutine routine) {
+        routines.Remove(routine.GroupNode);
+    }
+
     public void Stop() {
-        foreach (MonoRoutine routine in routines)
-            routine.Stop();
+        while (routines.Count>0) {
+            routines.First.Value.Stop();
+        }
         routines.Clear();
     }
 }
