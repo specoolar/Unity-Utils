@@ -9,22 +9,26 @@ public class FakeSpringJoint : MonoBehaviour
     [Header("Position")]
     public bool springPosition = true;
     public float spring = 100;
-    public float damp = 1;
+    public float damp = 10;
     public Vector3 positionOffset;
 
     [Header("Rotation")]
     public bool springRotation = true;
     public float angularSpring = 100;
-    public float angularDamp = 1;
+    public float angularDamp = 10;
     public Vector3 rotationOffset;
     Quaternion rotationOffsetQ;
 
     Vector3 currentPos;
     Vector3 velocity;
     Vector3 targetPos;
-    Quaternion currentRot = Quaternion.identity;
     Vector3 angularVelocity = Vector3.zero;
-    Quaternion targetRot = Quaternion.identity;
+    Quaternion currentRot;
+    Quaternion targetRot;
+
+    Quaternion rotationDifference;
+    Vector3 rotationDifferenceEuler;
+
     Quaternion zeroRot = Quaternion.identity;
 
     [ContextMenu("Apply offset")]
@@ -48,6 +52,7 @@ public class FakeSpringJoint : MonoBehaviour
         targetPos = connectedObject.TransformPoint(positionOffset);
         targetRot = connectedObject.rotation*rotationOffsetQ;
 
+        // Position
         if(springPosition){
             velocity += (targetPos - currentPos) * (spring * Time.fixedDeltaTime);
             currentPos += velocity * Time.fixedDeltaTime;
@@ -56,12 +61,13 @@ public class FakeSpringJoint : MonoBehaviour
             currentPos = targetPos;
         }
 
+        // Rotation
         if(springRotation){
-            Quaternion rotationDifference = targetRot * Quaternion.Inverse(currentRot);
+            rotationDifference = targetRot * Quaternion.Inverse(currentRot);
             rotationDifference.ToAngleAxis(out float angleInDegrees, out Vector3 rotationAxis);
-            Vector3 rotDegree = angleInDegrees * angularSpring * rotationAxis;
+            rotationDifferenceEuler = angleInDegrees * angularSpring * rotationAxis;
 
-            angularVelocity += rotDegree * Mathf.Deg2Rad;
+            angularVelocity += rotationDifferenceEuler * Mathf.Deg2Rad;
             currentRot *= Quaternion.Euler(transform.InverseTransformVector(angularVelocity) * Time.fixedDeltaTime);
             angularVelocity /= 1 + Time.fixedDeltaTime * angularDamp;
         }else{
